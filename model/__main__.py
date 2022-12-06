@@ -36,8 +36,14 @@ class LSTM_Classifier:
     def preprocessing(self, ):
         pass
 
-    def predict(self, ):
-        pass
+    def save(self, ):
+        self.model.save('model.h5')
+
+    def predict(self, text):
+        #vectorize text
+
+        #predict
+        return self.model.predict([text])
 
     def vectorize(self, ):
         pass
