@@ -12,7 +12,10 @@ This repository contains all the codes and resources required during the dvelopm
 No story yet
 
 ## Model planing
-No story yet
+We are going to use Neural networks to solve a binary text classification problem, there are may alternatives that belongs to, for example Recurrent Neural Network (RNN) or Long Short-Term Memory (LSTM).
+
+In this case we are going to explore basic Neural Networks with Keras for text classification.
+
 
 ## Model training and evaluation
 No story yet
