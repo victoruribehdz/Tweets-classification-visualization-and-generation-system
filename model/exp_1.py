@@ -81,7 +81,7 @@ class LSTM_Classifier:
 
     def __create_model__(self, ):
         model = Sequential()
-        total_words = 30
+        total_words = 10
         input_len = 10
 
         model.add(Embedding(total_words,150, input_length=input_len))
