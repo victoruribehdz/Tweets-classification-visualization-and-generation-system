@@ -1,6 +1,8 @@
 import tensorflow as tf
 from tensorflow import keras
+from tensorflow.keras.models import Sequential
 from tensorflow.keras import layers
+from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout
 import numpy as np
 import pandas as pd
 import nltk
@@ -32,7 +34,7 @@ class LSTM_Classifier:
         data = data[['clean_tweets', 'show']]
         data = data.dropna(axis=0)
         from sklearn.model_selection import train_test_split
-        base = np.zeros(15)
+        base = np.zeros(30)
 
         X = [refill(np.asanyarray(x), base) for x in self.vectorize(data['clean_tweets'].values)]
 
@@ -78,17 +80,32 @@ class LSTM_Classifier:
         return tokens
 
     def __create_model__(self, ):
-        inputs = keras.Input(shape=(None, ), dtype='int32')
-        x = layers.Embedding(self.max_features, 128)(inputs)
-        # Add 2 bidirectional LSTMs
-        x = layers.Bidirectional(layers.LSTM(64, return_sequences=True))(x)
-        x = layers.Bidirectional(layers.LSTM(64))(x)
-        # Add a classifier
-        outputs = layers.Dense(1, activation="sigmoid")(x)
-        model = keras.Model(inputs, outputs)
-        model.summary()
-        model.compile("adam", "binary_crossentropy", metrics=["accuracy"])
-        model.fit(self.data.get('x_train'), self.data.get('y_train'), batch_size=32, epochs=10, validation_data=(self.data.get('x_val'), self.data.get('y_val')))
+        model = Sequential()
+        total_words = 30
+        input_len = 10
+
+        model.add(Embedding(total_words,150, input_length=input_len))
+
+
+        # inputs = keras.Input(shape=(None, ), dtype='int32')
+        # x = layers.Embedding(self.max_features, 150)(inputs)
+        # # Add 2 bidirectional LSTMs
+        # x = layers.Bidirectional(layers.LSTM(700))(x)
+        # # x = layers.Bidirectional(layers.LSTM(64))(x)
+        # # Add a classifier
+        # outputs = layers.Dense(1, activation="softmax")(x)
+        # model = keras.Model(inputs, outputs)
+        # model.summary()
+        # model.compile("adam", "binary_crossentropy", metrics=["accuracy"])
+
+        model.add(LSTM(700))
+        model.add(Dropout(0.3))
+        
+        # ----------Add Output Layer
+        model.add(Dense(total_words, activation='softmax'))
+        model.compile(loss='categorical_crossentropy', optimizer='adam')
+
+        model.fit(self.data.get('x_train'), self.data.get('y_train'), verbose=5, epochs=20, validation_data=(self.data.get('x_val'), self.data.get('y_val')))
 
         return model
 
